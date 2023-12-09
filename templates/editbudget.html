@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Budget Item</title>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #91e5f6;
+            color: #133c55;
+            margin: 0;
+            padding: 0;
+            text-align: center;
+        }
+
+        form {
+            display: inline-block;
+            text-align: left;
+            background-color: #59a5d8;
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        label {
+            display: inline-block;
+            margin-bottom: 10px;
+            font-weight: bold;
+            width: 150px;
+        }
+
+        input {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+            margin-bottom: 10px;
+        }
+
+        button {
+            padding: 10px;
+            background-color: #386fa4;
+            color: #ffffff;
+            border: none;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #59a5d8;
+        }
+    </style>
+</head>
+<body>
+    <main>
+        <h2>Edit Budget Item</h2>
+        <form method="post" action="{{ url_for('edit_budget', id=budget_item.id) }}">
+            {{ form.hidden_tag() }}
+            <table class="add-budget-table">
+                <tr>
+                    <td><label for="category">Category:</label></td>
+                    <td>{{ form.category(class="form-control", required=true) }}</td>
+                </tr>
+                <tr>
+                    <td><label for="amount">Amount:</label></td>
+                    <td>{{ form.amount(class="form-control", required=true) }}</td>
+                </tr>
+            </table>
+            <button type="submit">Update Budget Item</button>
+        </form>
+    </main>
+</body>
+</html>

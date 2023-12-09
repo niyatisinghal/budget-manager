@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+ 
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Budget Overview</title>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #91e5f6;
+            color: #133c55;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background-color: #386fa4;
+            padding: 20px;
+            text-align: center;
+        }
+
+        h1 {
+            font-family: 'Syne', sans-serif;
+            font-size: 3em;
+            color: #ffffff; 
+        }
+
+        nav {
+            background-color: #59a5d8;
+            padding: 10px;
+            text-align: center;
+        }
+
+        nav a {
+            color: #ffffff;
+            text-decoration: none;
+            padding: 10px;
+            margin: 0 10px;
+        }
+
+        nav a:hover {
+            background-color: #84d2f6;
+            color: #133c55;  /* Text color on hover */
+        }
+
+        main {
+            padding: 20px;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-top: 20px; /* Add margin to separate the form and the table */
+        }
+
+        th, td {
+            border: 1px solid #386fa4;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #59a5d8;
+            color: #ffffff;
+        }
+
+        form {
+            margin-top: 20px;
+        }
+
+        /* Include the new CSS styles for the add-budget-table */
+        .add-budget-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        .add-budget-table label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .add-budget-table input,
+        .add-budget-table textarea {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+            margin-bottom: 10px;
+        }
+
+        .add-budget-table button {
+            margin-top: 10px;
+            padding: 8px;
+            background-color: #59a5d8;
+            color: #ffffff;
+            border: none;
+            cursor: pointer;
+        }
+
+        .add-budget-table button:hover {
+            background-color: #84d2f6;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Budget Overview</h1>
+    </header>
+
+    <nav>
+        <a href="/">Home</a>
+        <a href="/budget">Budget</a>
+        <a href="/expenses">Expenses</a>
+    </nav>
+
+    <main>
+        <table>
+            <tr>
+                <th>Category</th>
+                <th>Amount</th>
+                <th>Date</th> <!-- New column for date -->
+                <th>Time</th> <!-- New column for time -->
+                <th>Action</th>
+            </tr>
+            {% for item in budget_data %}
+                <tr>
+                    <td>{{ item.category }}</td>
+                    <td>${{ item.amount }}</td>
+                    <td>{{ item.timestamp.strftime('%Y-%m-%d') }}</td> <!-- Display date -->
+                    <td>{{ item.timestamp.strftime('%H:%M:%S') }}</td> <!-- Display time -->
+                    <td>
+                        <form method="post" action="{{ url_for('edit_budget', id=item.id) }}">
+                            <button type="submit">Edit</button>
+                        </form>
+                        <form method="post" action="{{ url_for('delete_budget', id=item.id) }}">
+                            <button type="submit">Delete</button>
+                        </form>
+                        <a href="{{ url_for('edit_budget', id=item.id) }}">Edit (Alternate)</a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </table>
+        <h2>Add Budget Item</h2>
+        <form method="post" action="{{ url_for('add_budget') }}">
+            <table class="add-budget-table">
+                <tr>
+                    <td><label for="category">Category:</label></td>
+                    <td><input type="text" name="category" required></td>
+                </tr>
+                <tr>
+                    <td><label for="amount">Amount:</label></td>
+                    <td><input type="text" name="amount" required></td>
+                </tr>
+                <tr>
+                    <td><label for="date">Date:</label></td>
+                    <td><input type="date" name="date" required></td>
+                </tr>
+                
+            </table>
+
+            <button type="submit">Add Budget Item</button>
+        </form>
+
+    </main>
+</body>
+</html>

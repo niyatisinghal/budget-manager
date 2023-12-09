@@ -147,9 +147,7 @@
             var frequencyError = document.getElementById("frequency-error");
             var pattern = /^(daily|weekly|monthly|yearly)$/;
 
-            if (frequencyInput.value.trim() === "") {
-                frequencyError.innerHTML = ""; // Clear the error message
-            } else if (!pattern.test(frequencyInput.value)) {
+            if (!pattern.test(frequencyInput.value)) {
                 frequencyError.innerHTML = "Please enter a valid frequency: daily, weekly, monthly, or yearly";
                 frequencyInput.focus();
                 return false;

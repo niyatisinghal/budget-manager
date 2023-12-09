@@ -141,6 +141,25 @@
             background-color: #84d2f6;
         }
     </style>
+    <script>
+        function validateFrequency() {
+            var frequencyInput = document.getElementById("frequency");
+            var frequencyError = document.getElementById("frequency-error");
+            var pattern = /^(daily|weekly|monthly|yearly)$/;
+
+            if (frequencyInput.value.trim() === "") {
+                frequencyError.innerHTML = ""; // Clear the error message
+            } else if (!pattern.test(frequencyInput.value)) {
+                frequencyError.innerHTML = "Please enter a valid frequency: daily, weekly, monthly, or yearly";
+                frequencyInput.focus();
+                return false;
+            } else {
+                frequencyError.innerHTML = ""; // Clear the error message
+            }
+
+            return true;
+        }
+    </script>
 </head>
 <body>
     <header>
@@ -156,7 +175,7 @@
     <main>
         <div class="add-budget-form">
             <h2>Add Budget Item</h2>
-            <form method="post" action="{{ url_for('add_budget') }}">
+            <form method="post" action="{{ url_for('add_budget') }}" onsubmit="return validateFrequency()">
                 <table class="add-budget-table">
                     <tr>
                         <td><label for="category">Category:</label></td>
@@ -164,11 +183,20 @@
                     </tr>
                     <tr>
                         <td><label for="amount">Amount:</label></td>
-                        <td><input type="text" name="amount" required></td>
+                        <td><input type="number" name="amount" required></td>
                     </tr>
                     <tr>
-                        <td><label for="date">Date:</label></td>
-                        <td><input type="date" name="date" required></td>
+                        <td><label for="frequency">Frequency:</label></td>
+                        <td><input type="text" name="frequency" id="frequency" class="form-control"  required oninput="validateFrequency()"> 
+                            <div id="frequency-error" style="color: red;"></div></td>
+                    </tr>
+                    <tr>
+                        <td><label for="start_date">Start Date:</label></td>
+                        <td><input type="date" name="start_date" class="form-control" required></td>
+                    </tr>
+                    <tr>
+                        <td><label for="end_date">End Date:</label></td>
+                        <td><input type="date" name="end_date" class="form-control" required></td>
                     </tr>
                 
                 </table>

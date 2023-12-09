@@ -46,6 +46,7 @@
 
         main {
             padding: 20px;
+            text-align: center;
         }
 
         table {
@@ -55,7 +56,7 @@
         }
 
         th, td {
-            border: 1px solid #386fa4;
+            
             padding: 8px;
             text-align: left;
         }
@@ -67,6 +68,43 @@
 
         form {
             margin-top: 20px;
+        }
+
+        .add-budget-form {
+            display: inline-block;
+            text-align: left;
+            background-color: #59a5d8;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            width: 70%; /* Adjust the width based on your design */
+            margin: auto; /* Center the form */
+        }
+
+        .add-budget-form label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: bold;
+            color: #ffffff; /* Text color for labels */
+        }
+
+        .add-budget-form input {
+            width: calc(100% - 16px); /* Adjust the width based on your design */
+            padding: 8px;
+            box-sizing: border-box;
+            margin-bottom: 10px;
+        }
+
+        .add-budget-form button {
+            padding: 10px; /* Adjust the padding based on your design */
+            background-color: #386fa4;
+            color: #ffffff;
+            border: none;
+            cursor: pointer;
+        }
+
+        .add-budget-form button:hover {
+            background-color: #59a5d8;
         }
 
         /* Include the new CSS styles for the add-budget-table */
@@ -116,6 +154,28 @@
     </nav>
 
     <main>
+        <div class="add-budget-form">
+            <h2>Add Budget Item</h2>
+            <form method="post" action="{{ url_for('add_budget') }}">
+                <table class="add-budget-table">
+                    <tr>
+                        <td><label for="category">Category:</label></td>
+                        <td><input type="text" name="category" required></td>
+                    </tr>
+                    <tr>
+                        <td><label for="amount">Amount:</label></td>
+                        <td><input type="text" name="amount" required></td>
+                    </tr>
+                    <tr>
+                        <td><label for="date">Date:</label></td>
+                        <td><input type="date" name="date" required></td>
+                    </tr>
+                
+                </table>
+                <button type="submit">Add Budget Item</button>
+            </form>
+        </div>
+
         <table>
             <tr>
                 <th>Category</th>
@@ -142,26 +202,6 @@
                 </tr>
             {% endfor %}
         </table>
-        <h2>Add Budget Item</h2>
-        <form method="post" action="{{ url_for('add_budget') }}">
-            <table class="add-budget-table">
-                <tr>
-                    <td><label for="category">Category:</label></td>
-                    <td><input type="text" name="category" required></td>
-                </tr>
-                <tr>
-                    <td><label for="amount">Amount:</label></td>
-                    <td><input type="text" name="amount" required></td>
-                </tr>
-                <tr>
-                    <td><label for="date">Date:</label></td>
-                    <td><input type="date" name="date" required></td>
-                </tr>
-                
-            </table>
-
-            <button type="submit">Add Budget Item</button>
-        </form>
 
     </main>
 </body>

@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Debt</title>
+</head>
+<body>
+    <h1>Edit Debt</h1>
+    <form method="POST" action="/edit_debt/{{ debt_item.id }}">
+        {{ form.csrf_token }}
+        {{ form.hidden_tag() }}
+        <label for="debt_type">Debt Type:</label>
+        {{ form.debt_type }}
+        <br>
+        <label for="principal_amount">Principal Amount:</label>
+        {{ form.principal_amount }}
+        <br>
+        <label for="interest_rate">Interest Rate:</label>
+        {{ form.interest_rate }}
+        <br>
+        <label for="monthly_payment">Monthly Payment:</label>
+        {{ form.monthly_payment }}
+        <br>
+        <label for="remaining_balance">Remaining Balance:</label>
+        {{ form.remaining_balance }}
+        <br>
+        <input type="submit" value="Save Changes">
+    </form>
+</body>
+</html>

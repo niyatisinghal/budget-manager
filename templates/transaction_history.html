@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Transaction History</title>
+</head>
+<body>
+    <h1>Add Transaction History</h1>
+    <form method="POST" action="/transaction_history">
+        {{ all_transactions.csrf_token }}
+        {{ all_transactions.hidden_tag() }}
+        <label for="date">Date:</label>
+        {{ all_transactions.date }}
+        <br>
+        <label for="description">Description:</label>
+        {{ all_transactions.description }}
+        <br>
+        <label for="category">Category:</label>
+        {{ all_transactions.category }}
+        <br>
+        <label for="amount">Amount:</label>
+        {{ all_transactions.amount }}
+        <br>
+        <label for="running_balance">Running Balance:</label>
+        {{ all_transactions.running_balance }}
+        <br>
+        <input type="submit" value="Add Transaction History">
+    </form>
+</body>
+</html>

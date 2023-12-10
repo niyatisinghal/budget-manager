@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Debt</title>
+</head>
+<body>
+    <h1>Add Debt</h1>
+    <form method="POST" action="/debt">
+        {{ alldebt.csrf_token }}
+        {{ alldebt.hidden_tag() }}
+        <label for="debt_type">Debt Type:</label>
+        {{ alldebt.debt_type }}
+        <br>
+        <label for="principal_amount">Principal Amount:</label>
+        {{ alldebt.principal_amount }}
+        <br>
+        <label for="interest_rate">Interest Rate:</label>
+        {{ alldebt.interest_rate }}
+        <br>
+        <label for="monthly_payment">Monthly Payment:</label>
+        {{ alldebt.monthly_payment }}
+        <br>
+        <label for="remaining_balance">Remaining Balance:</label>
+        {{ alldebt.remaining_balance }}
+        <br>
+        <input type="submit" value="Add Debt">
+    </form>
+</body>
+</html>

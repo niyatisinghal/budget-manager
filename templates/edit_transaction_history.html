@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Transaction History</title>
+</head>
+<body>
+    <h1>Edit Transaction History</h1>
+    <form method="POST" action="/edit_transaction_history/{{ transaction_item.id }}">
+        {{ form.csrf_token }}
+        {{ form.hidden_tag() }}
+        <label for="date">Date:</label>
+        {{ form.date }}
+        <br>
+        <label for="description">Description:</label>
+        {{ form.description }}
+        <br>
+        <label for="category">Category:</label>
+        {{ form.category }}
+        <br>
+        <label for="amount">Amount:</label>
+        {{ form.amount }}
+        <br>
+        <label for="running_balance">Running Balance:</label>
+        {{ form.running_balance }}
+        <br>
+        <input type="submit" value="Save Changes">
+    </form>
+</body>
+</html>

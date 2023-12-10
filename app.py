@@ -2,10 +2,10 @@ from flask import Flask, render_template, request, redirect, url_for, flash
 from flask_sqlalchemy import SQLAlchemy
 from flask_wtf import FlaskForm
 from flask_migrate import Migrate
-from wtforms import StringField, FloatField, DateField
+from wtforms import StringField, FloatField, DateField, SelectField
 from datetime import datetime
-from wtforms.validators import DataRequired  # Add this import
-#from wtforms.fields.html5 import DateField  # Add this import
+from wtforms.validators import DataRequired , NumberRange # Add this import
+from wtforms.widgets import NumberInput
 
 
 app = Flask(__name__)
@@ -91,10 +91,10 @@ class TransactionHistory(db.Model):
 class TransactionHistoryForm(FlaskForm):
     date = DateField('Date', validators=[DataRequired()])
     description = StringField('Description', validators=[DataRequired()])
-    category = StringField('Category', validators=[DataRequired()])
-    amount = FloatField('Amount', validators=[DataRequired()])
-    running_balance = FloatField('Running Balance', validators=[DataRequired()])
-
+    category_choices = [('income', 'Income'), ('expense', 'Expense'), ('investment', 'Investment'), ('saving', 'Saving'), ('miscellaneous', 'Miscellaneous')]
+    category = SelectField('Category', choices=category_choices, validators=[DataRequired()])    
+    amount = FloatField('Amount', widget=NumberInput(), validators=[DataRequired(), NumberRange(min=0, message="Please enter a valid numeric value.")])
+    running_balance = FloatField('Running Balance', widget=NumberInput(), validators=[DataRequired(), NumberRange(min=0, message="Please enter a valid numeric value.")])
 
 
 @app.route('/')

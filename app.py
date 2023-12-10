@@ -1,8 +1,11 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, flash
 from flask_sqlalchemy import SQLAlchemy
 from flask_wtf import FlaskForm
 from flask_migrate import Migrate
-from wtforms import StringField, FloatField
+from wtforms import StringField, FloatField, DateField
+from datetime import datetime
+from wtforms.validators import DataRequired  # Add this import
+#from wtforms.fields.html5 import DateField  # Add this import
 
 
 app = Flask(__name__)
@@ -17,6 +20,9 @@ class Budget(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     category = db.Column(db.String(50), nullable=False)
     amount = db.Column(db.Float, nullable=False)
+    frequency = db.Column(db.String(50), nullable=False)
+    start_date = db.Column(db.Date, nullable=False)
+    end_date = db.Column(db.Date, nullable=False)
 
 
 class Expense(db.Model):
@@ -30,6 +36,10 @@ class Expense(db.Model):
 class BudgetForm(FlaskForm):
     category = db.Column(db.String(50), nullable=False)
     amount = db.Column(db.Float, nullable=False)
+    frequency = StringField('Frequency', validators=[DataRequired()])
+    start_date = DateField('Start Date', validators=[DataRequired()])
+    end_date = DateField('End Date', validators=[DataRequired()])
+
 
 
 class ExpenseForm(FlaskForm):
@@ -44,13 +54,26 @@ def home():
 @app.route('/budget', methods=['GET', 'POST'])
 def add_budget():
     form = BudgetForm()
+
     if form.validate_on_submit():
         category = form.category.data
         amount = form.amount.data
-        new_budget = Budget(category=category, amount=amount)
+        frequency = form.frequency.data
+        start_date = form.start_date.data
+        end_date = form.end_date.data
+
+        new_budget = Budget(category=category, amount=amount, frequency=frequency, start_date=start_date, end_date=end_date)
+
         db.session.add(new_budget)
         db.session.commit()
-        return redirect(url_for('budget'))
+
+        # Retrieve the updated budget data from the database
+        budget_data = Budget.query.all()
+
+        # Flash a success message
+        flash('Budget item added successfully!', 'success')
+
+        return render_template('budget.html', allbudget=form, budget_data=budget_data)
     return render_template('budget.html', allbudget=form)
 
 

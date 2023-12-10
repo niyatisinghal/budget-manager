@@ -140,6 +140,31 @@
         .add-budget-table button:hover {
             background-color: #84d2f6;
         }
+
+        /* Add this to the existing styles */
+        ul.flashes {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        ul.flashes li {
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+
+        ul.flashes li.success {
+            background-color: #4CAF50;
+            color: #ffffff;
+        }
+
+        ul.flashes li.error {
+            background-color: #f44336;
+            color: #ffffff;
+        }
+
     </style>
     <script>
         function validateFrequency() {
@@ -170,9 +195,22 @@
         <a href="/expenses">Expenses</a>
     </nav>
 
+
+    <!-- Add this at the beginning of the body to display flashed messages -->
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <ul class="flashes">
+          {% for message in messages %}
+            <li class="success">{{ message }}</li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+    {% endwith %}
+
     <main>
         <div class="add-budget-form">
             <h2>Add Budget Item</h2>
+            <!-- form.html -->
             <form method="post" action="{{ url_for('add_budget') }}" onsubmit="return validateFrequency()">
                 <table class="add-budget-table">
                     <tr>
@@ -185,8 +223,10 @@
                     </tr>
                     <tr>
                         <td><label for="frequency">Frequency:</label></td>
-                        <td><input type="text" name="frequency" id="frequency" class="form-control"  required oninput="validateFrequency()"> 
-                            <div id="frequency-error" style="color: red;"></div></td>
+                        <td>
+                        <input type="text" name="frequency" id="frequency" class="form-control" required oninput="validateFrequency()"> 
+                        <div id="frequency-error" style="color: red;"></div>
+                        </td>
                     </tr>
                     <tr>
                         <td><label for="start_date">Start Date:</label></td>
@@ -196,39 +236,14 @@
                         <td><label for="end_date">End Date:</label></td>
                         <td><input type="date" name="end_date" class="form-control" required></td>
                     </tr>
-                
                 </table>
                 <button type="submit">Add Budget Item</button>
             </form>
+
         </div>
 
-        <table>
-            <tr>
-                <th>Category</th>
-                <th>Amount</th>
-                <th>Date</th> <!-- New column for date -->
-                <th>Time</th> <!-- New column for time -->
-                <th>Action</th>
-            </tr>
-            {% for item in budget_data %}
-                <tr>
-                    <td>{{ item.category }}</td>
-                    <td>${{ item.amount }}</td>
-                    <td>{{ item.timestamp.strftime('%Y-%m-%d') }}</td> <!-- Display date -->
-                    <td>{{ item.timestamp.strftime('%H:%M:%S') }}</td> <!-- Display time -->
-                    <td>
-                        <form method="post" action="{{ url_for('edit_budget', id=item.id) }}">
-                            <button type="submit">Edit</button>
-                        </form>
-                        <form method="post" action="{{ url_for('delete_budget', id=item.id) }}">
-                            <button type="submit">Delete</button>
-                        </form>
-                        <a href="{{ url_for('edit_budget', id=item.id) }}">Edit (Alternate)</a>
-                    </td>
-                </tr>
-            {% endfor %}
-        </table>
-
+        {% include 'table.html' %}
+        <p>debug: {{ budget_data }} </p>
     </main>
 </body>
 </html>

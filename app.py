@@ -2,10 +2,13 @@ from flask import Flask, render_template, request, redirect, url_for, flash
 from flask_sqlalchemy import SQLAlchemy
 from flask_wtf import FlaskForm
 from flask_migrate import Migrate
-from wtforms import StringField, FloatField, DateField, SelectField
+from wtforms import StringField, FloatField, DateField, SelectField, ValidationError, DecimalField
 from datetime import datetime
-from wtforms.validators import DataRequired , NumberRange # Add this import
-from wtforms.widgets import NumberInput
+from wtforms.validators import DataRequired , NumberRange, EqualTo, ValidationError, Regexp
+from wtforms.widgets import NumberInput, Input
+from markupsafe import Markup
+import re
+
 
 
 app = Flask(__name__)
@@ -14,6 +17,61 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SECRET_KEY'] = 'your_secret_key'
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
+
+
+def validate_numeric(form, field):
+    try:
+        float(field.data)
+    except ValueError:
+        raise ValidationError('Please enter a valid numeric value.')
+
+
+class CurrencyInput(Input):
+    input_type = 'text'
+
+    def __call__(self, field, **kwargs):
+        kwargs.setdefault('type', 'text')
+        field_id = kwargs.pop('id', field.id)
+        html = ['<div class="input-group">']
+        html.append('<span class="input-group-addon">$</span>')
+        html.append(super(CurrencyInput, self).__call__(field, id=field_id, **kwargs))
+        html.append('</div>')
+        return Markup(''.join(html))
+
+
+class PercentageInput(Input):
+    input_type = 'text'
+
+    def __call__(self, field, **kwargs):
+        kwargs.setdefault('type', 'text')
+        field_id = kwargs.pop('id', field.id)
+        html = ['<div class="input-group">']
+        html.append(super(PercentageInput, self).__call__(field, id=field_id, **kwargs))
+        html.append('<span class="input-group-addon">%</span>')
+        html.append('</div>')
+        return Markup(''.join(html))
+
+
+class RemainingBalanceValidator:
+    def __init__(self, principal_fieldname, interest_rate_fieldname, months_fieldname):
+        self.principal_fieldname = principal_fieldname
+        self.interest_rate_fieldname = interest_rate_fieldname
+        self.months_fieldname = months_fieldname
+
+    def __call__(self, form, field):
+        principal = form[self.principal_fieldname].data
+        interest_rate = form[self.interest_rate_fieldname].data / 100 / 12  # Monthly interest rate
+        months = form[self.months_fieldname].data  # Total number of payments
+
+        calculated_remaining_balance = principal * (1 - (1 + interest_rate) ** -months) / interest_rate
+
+        if not field.data:
+            raise ValidationError('This field is required.')
+
+        if field.data != round(calculated_remaining_balance, 2):
+            raise ValidationError('The calculated remaining balance does not match.')
+
+        
 
 
 class Budget(db.Model):
@@ -72,12 +130,21 @@ class Debt(db.Model):
 
 
 class DebtForm(FlaskForm):
-    debt_type = StringField('Debt Type', validators=[DataRequired()])
-    principal_amount = FloatField('Principal Amount', validators=[DataRequired()])
-    interest_rate = FloatField('Interest Rate', validators=[DataRequired()])
-    monthly_payment = FloatField('Monthly Payment', validators=[DataRequired()])
-    remaining_balance = FloatField('Remaining Balance', validators=[DataRequired()])
+    debt_type_choices = [('student_loans', 'Student Loans'),
+                         ('credit_cards', 'Credit Cards'),
+                         ('mortgage', 'Mortgage'),
+                         ('auto_loan', 'Auto Loan'),
+                         ('personal_loan', 'Personal Loan'),
+                         ('other_loan', 'Other Loan')]
 
+    debt_type = SelectField('Debt Type', choices=debt_type_choices, validators=[DataRequired()])
+    principal_amount = DecimalField('Principal Amount', validators=[DataRequired(), NumberRange(min=0, message="Please enter a valid numeric value.")])
+    interest_rate = DecimalField('Interest Rate', widget=NumberInput(), validators=[DataRequired(), NumberRange(min=0, message="Please enter a valid numeric value.")])
+    monthly_payment = DecimalField('Monthly Payment', validators=[DataRequired(), NumberRange(min=0, message="Please enter a valid numeric value.")], widget=CurrencyInput())
+    remaining_balance = DecimalField('Remaining Balance', validators=[DataRequired(), RemainingBalanceValidator('principal_amount', 'interest_rate', 'months')])
+
+
+    
 
 class TransactionHistory(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -244,7 +311,7 @@ def add_debt():
         principal_amount = form.principal_amount.data
         interest_rate = form.interest_rate.data
         monthly_payment = form.monthly_payment.data
-        remaining_balance = form.remaining_balance.data
+        remaining_balance = calculate_remaining_balance(principal_amount, interest_rate, form.months.data)
 
         new_debt = Debt(debt_type=debt_type, principal_amount=principal_amount,
                         interest_rate=interest_rate, monthly_payment=monthly_payment,
@@ -260,7 +327,17 @@ def add_debt():
         flash('Debt entry added successfully!', 'success')
 
         return render_template('debt.html', alldebt=form, debt_data=debt_data)
+    
     return render_template('debt.html', alldebt=form)
+
+
+def calculate_remaining_balance(principal, interest_rate, months):
+    r = interest_rate / 12  # Monthly interest rate
+    n = months  # Total number of payments
+
+    remaining_balance = principal * (1 - (1 + r) ** -n) / r
+
+    return round(remaining_balance, 2)
 
 
 @app.route('/transaction_history', methods=['GET', 'POST'])

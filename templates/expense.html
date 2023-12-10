@@ -164,12 +164,38 @@
     </nav>
 
     <main>
+        <h2>Record Expense</h2>
+        <form id="record-expense-form" method="post" action="{{ url_for('record_expense') }}" onkeyup="toggleTableVisibility()">
+            <table class="add-expense-table">
+                <tr>
+                    <td><label for="category">Category:</label></td>
+                    <td><input type="text" name="category" required></td>
+                </tr>
+                <tr>
+                    <td><label for="amount">Amount:</label></td>
+                    <td><input type="number" name="amount" required></td>
+                </tr>
+                <tr>
+                    <td><label for="date">Date:</label></td>
+                    <td><input type="date" name="date" required></td>
+                </tr>
+                <tr>
+                    <td><label for="notes">Notes:</label></td>
+                    <td><textarea name="notes" rows="4" cols="50"></textarea></td>
+                </tr>
+               
+            </table>
+
+            <button type="submit">Record Expense</button>
+        </form>
+
+
         <table id="expense-table" class="initially-hidden">
             <tr>
                 <th>Category</th>
                 <th>Amount</th>
                 <th>Date</th> <!-- New column for date -->
-                <th>Time</th> <!-- New column for time -->
+                <th>Notes</th> <!-- New column for time -->
                 
             </tr>
           
@@ -196,30 +222,7 @@
             </tr>
         </table>
 
-        <h2>Record Expense</h2>
-        <form id="record-expense-form" method="post" action="{{ url_for('record_expense') }}" onkeyup="toggleTableVisibility()">
-            <table class="add-expense-table">
-                <tr>
-                    <td><label for="category">Category:</label></td>
-                    <td><input type="text" name="category" required></td>
-                </tr>
-                <tr>
-                    <td><label for="amount">Amount:</label></td>
-                    <td><input type="text" name="amount" required></td>
-                </tr>
-                <tr>
-                    <td><label for="date">Date:</label></td>
-                    <td><input type="date" name="date" required></td>
-                </tr>
-                <tr>
-                    <td><label for="notes">Notes:</label></td>
-                    <td><textarea name="notes" rows="4" cols="50"></textarea></td>
-                </tr>
-               
-            </table>
-
-            <button type="submit">Record Expense</button>
-        </form>
+        
     </main>
 </body>
 </html>

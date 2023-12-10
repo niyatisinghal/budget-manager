@@ -264,9 +264,9 @@ def add_debt():
 
 
 @app.route('/transaction_history', methods=['GET', 'POST'])
-def add_transaction_history():
+def record_transaction_history():
     form = TransactionHistoryForm()
-
+    
     if form.validate_on_submit():
         date = form.date.data
         description = form.description.data
@@ -284,12 +284,37 @@ def add_transaction_history():
         # Retrieve the updated transaction history data from the database
         transaction_history_data = TransactionHistory.query.all()
 
-        # Flash a success message
+        # Flash a success message (if you want)
         flash('Transaction history entry added successfully!', 'success')
 
         return render_template('transaction_history.html', all_transactions=form, transaction_history_data=transaction_history_data)
+    
     return render_template('transaction_history.html', all_transactions=form)
 
+
+@app.route('/edit_transaction_history/<int:id>', methods=['GET', 'POST'])
+def edit_transaction_history(id):
+    transaction_item = TransactionHistory.query.get_or_404(id)
+    form = TransactionHistoryForm(obj=transaction_item)
+
+    if form.validate_on_submit():
+        form.populate_obj(transaction_item)
+        db.session.commit()
+        # Flash a success message (if you want)
+        flash('Transaction history entry updated successfully!', 'success')
+        return redirect(url_for('transaction_history'))
+
+    return render_template('edit_transaction_history.html', form=form, transaction_item=transaction_item)
+
+
+@app.route('/delete_transaction_history/<int:id>', methods=['POST'])
+def delete_transaction_history(id):
+    transaction_item = TransactionHistory.query.get_or_404(id)
+    db.session.delete(transaction_item)
+    db.session.commit()
+    # Flash a success message (if you want)
+    flash('Transaction history entry deleted successfully!', 'success')
+    return redirect(url_for('transaction_history'))
 
 
 if __name__ == '__main__':

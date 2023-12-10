@@ -107,21 +107,49 @@
         }
     </style>
     <script>
-        function toggleTableVisibility() {
-            const table = document.getElementById('expense-table');
-            const recordExpenseForm = document.getElementById('record-expense-form');
+        // Modify the toggleTableVisibility function
+    function toggleTableVisibility() {
+        const table = document.getElementById('expense-table');
+        const recordExpenseForm = document.getElementById('record-expense-form');
+        const addedItemRow = document.getElementById('added-item-row');
 
-            if (table && recordExpenseForm) {
-                if (recordExpenseForm.elements['category'].value.trim() !== ''
-                    || recordExpenseForm.elements['amount'].value.trim() !== ''
-                    || recordExpenseForm.elements['date'].value.trim() !== ''
-                    || recordExpenseForm.elements['notes'].value.trim() !== '') {
-                    table.classList.remove('initially-hidden');
-                } else {
-                    table.classList.add('initially-hidden');
-                }
+        if (table && recordExpenseForm && addedItemRow) {
+            const category = recordExpenseForm.elements['category'].value.trim();
+            const amount = recordExpenseForm.elements['amount'].value.trim();
+            const date = recordExpenseForm.elements['date'].value.trim();
+            const notes = recordExpenseForm.elements['notes'].value.trim();
+
+            if (category !== '' || amount !== '' || date !== '' || notes !== '') {
+                table.classList.remove('initially-hidden');
+                addedItemRow.classList.remove('initially-hidden');
+
+                // Update the added item row with the form values
+                document.getElementById('added-category').textContent = category;
+                document.getElementById('added-amount').textContent = amount;
+                document.getElementById('added-date').textContent = formatDate(date);
+                document.getElementById('added-notes').textContent = notes;
+            } else {
+                table.classList.add('initially-hidden');
+                addedItemRow.classList.add('initially-hidden');
             }
         }
+    }
+
+    // Function to format the date
+    function formatDate(dateString) {
+            const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
+            const formattedDate = new Date(dateString).toLocaleDateString(undefined, options);
+            return formattedDate;
+        }
+
+        function handleFormSubmit(event) {
+            // Prevent the default form submission
+            event.preventDefault();
+
+            // Reset the form
+            document.getElementById('record-expense-form').reset();
+        }
+
     </script>
 </head>
 <body>
@@ -142,7 +170,7 @@
                 <th>Amount</th>
                 <th>Date</th> <!-- New column for date -->
                 <th>Time</th> <!-- New column for time -->
-                <th>Action</th>
+                
             </tr>
           
             {% for item in expense_data %}
@@ -159,6 +187,13 @@
                     </td>
                 </tr>
             {% endfor %}
+            <!-- New row for the added expense item -->
+            <tr id="added-item-row" class="initially-hidden">
+                <td id="added-category"></td>
+                <td id="added-amount"></td>
+                <td id="added-date"></td>
+                <td id="added-notes"></td>
+            </tr>
         </table>
 
         <h2>Record Expense</h2>

@@ -105,6 +105,11 @@
         .initially-hidden {
             display: none;
         }
+        #notification {
+            display: none;
+            color: red;
+            margin-top: 10px;
+        }
     </style>
     <script>
         // Modify the toggleTableVisibility function
@@ -137,18 +142,70 @@
 
     // Function to format the date
     function formatDate(dateString) {
-            const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
-            const formattedDate = new Date(dateString).toLocaleDateString(undefined, options);
-            return formattedDate;
-        }
+        const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
+        const formattedDate = new Date(dateString).toLocaleDateString(undefined, options);
+        return formattedDate;
+    }
 
-        function handleFormSubmit(event) {
+    function handleFormSubmit(event) {
             // Prevent the default form submission
-            event.preventDefault();
+        event.preventDefault();
 
             // Reset the form
-            document.getElementById('record-expense-form').reset();
+        document.getElementById('record-expense-form').reset();
+    }
+
+    function addExpenseRow() {
+        const table = document.getElementById('expense-table');
+        const recordExpenseForm = document.getElementById('record-expense-form');
+        const notification = document.getElementById('notification');
+
+        if (table && recordExpenseForm) {
+            const category = recordExpenseForm.elements['category'].value.trim();
+            const amount = recordExpenseForm.elements['amount'].value.trim();
+            const date = recordExpenseForm.elements['date'].value.trim();
+            const notes = recordExpenseForm.elements['notes'].value.trim();
+
+            if (category !== '' && amount !== '' && date !== '') {
+            // Create a new row and cells for the table
+                const newRow = table.insertRow(1); // Insert at the second row (index 1) to leave space for the header
+                const cell1 = newRow.insertCell(0);
+                const cell2 = newRow.insertCell(1);
+                const cell3 = newRow.insertCell(2);
+                const cell4 = newRow.insertCell(3);
+
+            // Populate the cells with form values
+                cell1.textContent = category;
+                cell2.textContent = '$' + amount;
+                cell3.textContent = formatDate(date);
+
+            // Optional: If notes are provided, add them to the fourth cell
+                if (notes !== '') {
+                    cell4.textContent = notes;
+            }
+
+            // Clear the form for the next input
+            recordExpenseForm.reset();
+            // Show success message
+            notification.textContent = 'Expense recorded successfully.';
+            notification.style.color = 'green';
+        } else {
+            // Show error message
+            notification.textContent = 'Please fill in category, amount, and date before recording the expense.';
+            notification.style.color = 'red';
         }
+        // Display the notification
+        notification.style.display = 'block';
+
+// Hide the notification after a few seconds (you can adjust the timeout)
+        setTimeout(() => {
+            notification.style.display = 'none';
+            }, 3000);
+    }
+}
+
+
+        
 
     </script>
 </head>
@@ -183,10 +240,15 @@
                     <td><label for="notes">Notes:</label></td>
                     <td><textarea name="notes" rows="4" cols="50"></textarea></td>
                 </tr>
-               
+                <tr>
+                    <td colspan="2" style="text-align: center;">
+                        <button type="button" onclick="addExpenseRow()">Record Expense</button>
+                    </td>
+                </tr>
+
             </table>
 
-            <button type="submit">Record Expense</button>
+            
         </form>
 
 
@@ -221,6 +283,8 @@
                 <td id="added-notes"></td>
             </tr>
         </table>
+
+        <div id="notification"></div>
 
         
     </main>

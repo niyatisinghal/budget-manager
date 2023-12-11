@@ -4,7 +4,7 @@ from flask_wtf import FlaskForm
 from flask_migrate import Migrate
 from wtforms import StringField, FloatField, DateField, SelectField, ValidationError, DecimalField
 from datetime import datetime
-from wtforms.validators import DataRequired , NumberRange, EqualTo, ValidationError, Regexp
+from wtforms.validators import DataRequired , NumberRange, EqualTo, ValidationError, Regexp, AnyOf
 from wtforms.widgets import NumberInput, Input
 from markupsafe import Markup
 import re
@@ -92,8 +92,25 @@ class Expense(db.Model):
 
 
 class BudgetForm(FlaskForm):
-    category = db.Column(db.String(50), nullable=False)
-    amount = db.Column(db.Float, nullable=False)
+    category_choices = [
+        ('housing', 'Housing'),
+        ('utilities', 'Utilities'),
+        ('groceries', 'Groceries'),
+        ('transportation', 'Transportation'),
+        ('insurance', 'Insurance'),
+        ('debt_payments', 'Debt Payments'),
+        ('entertainment', 'Entertainment'),
+        ('personal_care', 'Personal Care'),
+        ('health_and_fitness', 'Health and Fitness'),
+        ('savings', 'Savings'),
+        ('clothing', 'Clothing'),
+        ('gifts', 'Gifts'),
+        ('travel', 'Travel'),
+        ('miscellaneous', 'Miscellaneous')
+    ]
+
+    category = SelectField('Category', choices=category_choices, validators=[DataRequired()])
+    amount = DecimalField('Amount', validators=[DataRequired(), NumberRange(min=0), validate_numeric], widget=CurrencyInput())
     frequency = StringField('Frequency', validators=[DataRequired()])
     start_date = DateField('Start Date', validators=[DataRequired()])
     end_date = DateField('End Date', validators=[DataRequired()])
@@ -114,11 +131,25 @@ class Income(db.Model):
 
 
 class IncomeForm(FlaskForm):
-    source = StringField('Source', validators=[DataRequired()])
-    planned_income = FloatField('Planned Income', validators=[DataRequired()])
-    actual_income = FloatField('Actual Income')
-    date = DateField('Date', validators=[DataRequired()])
+    source_choices = [
+        ('salary', 'Salary'),
+        ('freelance', 'Freelance'),
+        ('side_hustle', 'Side Hustle'),
+        ('bonus', 'Bonus'),
+        ('business_income', 'Business Income'),
+        ('interest_income', 'Interest Income'),
+        ('online_platforms', 'Online Platforms'),
+        ('pensions', 'Pensions')
+    ]
 
+    def validate_numeric(form, field):
+        if not re.match(r'^\d+(\.\d+)?$', str(field.data)):
+            raise ValidationError('Please enter a valid numeric value.')
+
+    source = SelectField('Source', choices=source_choices, validators=[DataRequired()])
+    planned_income = DecimalField('Planned Income', validators=[DataRequired(), NumberRange(min=0), validate_numeric], widget=CurrencyInput())
+    actual_income = DecimalField('Actual Income', widget=CurrencyInput())
+    date = DateField('Date', validators=[DataRequired()])
 
 class Debt(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -168,11 +199,12 @@ class TransactionHistoryForm(FlaskForm):
 def home():
     return render_template('index.html')
 
-@app.route('/budget', methods=['GET', 'POST'])
+@app.route('/budget1', methods=['GET', 'POST'])
 def add_budget():
     form = BudgetForm()
 
     if form.validate_on_submit():
+        print(form.category)
         category = form.category.data
         amount = form.amount.data
         frequency = form.frequency.data
@@ -190,8 +222,15 @@ def add_budget():
         # Flash a success message
         flash('Budget item added successfully!', 'success')
 
-        return render_template('budget.html', allbudget=form, budget_data=budget_data)
-    return render_template('budget.html', allbudget=form)
+        return jsonify({
+            'category': category,
+            'amount': amount,
+            'frequency': frequency,
+            'start_date': start_date.strftime('%Y-%m-%d'),
+            'end_date': end_date.strftime('%Y-%m-%d')
+        })
+    # Pass the form variable to the template
+    return render_template('budget1.html', form=form)
 
 
 @app.route('/expenses', methods=['POST', 'GET'])
@@ -215,7 +254,7 @@ def edit_budget(id):
     if form.validate_on_submit():
         form.populate_obj(budget_item)
         db.session.commit()
-        return redirect(url_for('budget'))
+        return redirect(url_for('budget1'))
     return render_template('editbudget.html', form=form, budget_item=budget_item)
 
 @app.route('/edit_expense/<int:id>', methods=['GET', 'POST'])
@@ -246,7 +285,7 @@ def delete_budget(id):
     budget_item = Budget.query.get_or_404(id)
     db.session.delete(budget_item)
     db.session.commit()
-    return redirect(url_for('budget'))
+    return redirect(url_for('budget1'))
 
 
 @app.route('/delete_expense/<int:id>', methods=['POST'])

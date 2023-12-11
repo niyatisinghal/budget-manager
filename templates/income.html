@@ -3,26 +3,227 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Add Income</title>
+    <title>Income Tracking</title>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #91e5f6;
+            color: #133c55;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background-color: #386fa4;
+            padding: 20px;
+            text-align: center;
+        }
+
+        h1 {
+            font-family: 'Syne', sans-serif;
+            font-size: 3em;
+            color: #ffffff;  /* White text on the header */
+            margin: 0;
+        }
+
+        nav {
+            background-color: #59a5d8;
+            padding: 10px;
+            text-align: center;
+        }
+
+        nav a {
+            color: #ffffff;
+            text-decoration: none;
+            padding: 10px;
+            margin: 0 10px;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+
+        nav a:hover {
+            background-color: #84d2f6;
+            color: #133c55;  /* Text color on hover */
+        }
+
+        main {
+            padding: 20px;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        th, td {
+            border: 1px solid #386fa4;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #59a5d8;
+            color: #ffffff;
+            font-family: 'Syne', sans-serif;
+            font-size: 1.2em;
+        }
+
+        .add-income-table th {
+            background-color: #84d2f6;
+            color: #133c55;
+        }
+
+        form {
+            margin-top: 20px;
+        }
+
+        /* Include the new CSS styles for the add-income-table */
+        .add-income-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        .add-income-table label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+
+        .add-income-table input,
+        .add-income-table textarea {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+            margin-bottom: 10px;
+            font-size: 1em;
+        }
+
+        .add-income-table button {
+            margin-top: 20px;
+            padding: 12px;
+            background-color: #59a5d8;
+            color: #ffffff;
+            border: none;
+            cursor: pointer;
+            font-size: 1.2em;
+        }
+
+        .add-income-table button:hover {
+            background-color: #84d2f6;
+        }
+
+        .initially-hidden {
+            display: none;
+        }
+
+        #income-notification {
+            display: none;
+            color: green;
+            margin-top: 10px;
+        }
+    </style>
+    <script>
+        // Modify the existing JavaScript functions or add new ones as needed
+        function toggleIncomeTableVisibility() {
+            const incomeTable = document.getElementById('income-table');
+
+            // You can customize the logic to toggle visibility based on user input
+            // For example, if any field in the form has a value, show the table
+            const form = document.getElementById('record-income-form');
+            const anyFieldHasValue = Array.from(form.elements).some(element => element.value.trim() !== '');
+
+            if (incomeTable) {
+                incomeTable.style.display = anyFieldHasValue ? 'table' : 'none';
+            }
+        }
+
+        // Add any additional JavaScript functions or modifications as needed
+    </script>
 </head>
 <body>
-    <h1>Add Income</h1>
-    <form method="POST" action="/income">
-        {{ allincome.csrf_token }}
-        {{ allincome.hidden_tag() }}
-        <label for="source">Source:</label>
-        {{ allincome.source }}
-        <br>
-        <label for="planned_income">Planned Income:</label>
-        {{ allincome.planned_income }}
-        <br>
-        <label for="actual_income">Actual Income:</label>
-        {{ allincome.actual_income }}
-        <br>
-        <label for="date">Date:</label>
-        {{ allincome.date }}
-        <br>
-        <input type="submit" value="Add Income">
-    </form>
+    <header>
+        <h1>Income Tracking</h1>
+    </header>
+
+    <nav>
+        <a href="/">Home</a>
+        <a href="/budget">Budget</a>
+        <a href="/income">Income</a>
+    </nav>
+
+    <main>
+        <h2>Record Income</h2>
+        <form id="record-income-form" method="post" action="{{ url_for('add_income') }}" onkeyup="toggleIncomeTableVisibility()">
+            <table class="add-income-table">
+                <tr>
+                    <td><label for="source">Source:</label></td>
+                    <td>
+                        <select name="source" required>
+                            <option value="salary">Salary</option>
+                            <option value="freelance">Freelance</option>
+                            <option value="side_hustle">Side Hustle</option>
+                            <option value="bonus">Bonus</option>
+                            <option value="business_income">Business Income</option>
+                            <option value="interest_income">Interest Income</option>
+                            <option value="online_platforms">Online Platforms</option>
+                            <option value="pensions">Pensions</option>
+                        </select>
+                    </td>
+                </tr>
+                
+                <tr>
+                    <td><label for="planned_income">Planned Income:</label></td>
+                    <td><input type="number" name="planned_income" required></td>
+                </tr>
+                <tr>
+                    <td><label for="actual_income">Actual Income:</label></td>
+                    <td><input type="number" name="actual_income"></td>
+                </tr>
+                <tr>
+                    <td><label for="date">Date:</label></td>
+                    <td><input type="date" name="date" required></td>
+                </tr>
+                <tr>
+                    <td colspan="2" style="text-align: center;">
+                        <button type="submit">Record Income</button>
+                    </td>
+                </tr>
+            </table>
+        </form>
+
+        <!-- Table to display recorded income entries -->
+        <table id="income-table" style="display: none;">
+            <tr>
+                <th>Source</th>
+                <th>Planned Income</th>
+                <th>Actual Income</th>
+                <th>Date</th>
+                <th>Actions</th>
+            </tr>
+          
+            {% for income_entry in income_data %}
+                <tr>
+                    <td>{{ income_entry.source }}</td>
+                    <td>${{ income_entry.planned_income }}</td>
+                    <td>${{ income_entry.actual_income }}</td>
+                    <td>{{ income_entry.date }}</td>
+                    <td>
+                        <form method="post" action="{{ url_for('edit_income', id=income_entry.id) }}">
+                            <button type="submit">Edit</button>
+                        </form>
+                        <form method="post" action="{{ url_for('delete_income', id=income_entry.id) }}">
+                            <button type="submit">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+            {% endfor %}
+        </table>
+
+        <!-- Optional: Notification or message div -->
+        <div id="income-notification"></div>
+    </main>
 </body>
 </html>

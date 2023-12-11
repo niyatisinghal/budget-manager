@@ -87,6 +87,8 @@ class Expense(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     category = db.Column(db.String(50), nullable=False)
     amount = db.Column(db.Float, nullable=False)
+    date = db.Column(db.Date, nullable=False)
+    notes = db.Column(db.String(255))
     budget_id = db.Column(db.Integer, db.ForeignKey('budget.id'), nullable=False)
     budget = db.relationship('Budget', backref=db.backref('expenses', lazy=True))
 
@@ -118,8 +120,27 @@ class BudgetForm(FlaskForm):
 
 
 class ExpenseForm(FlaskForm):
-    category = db.Column(db.String(50), nullable=False)
-    amount = db.Column(db.Float, nullable=False)
+    category_choices = [
+        ('housing', 'Housing'),
+        ('utilities', 'Utilities'),
+        ('groceries', 'Groceries'),
+        ('transportation', 'Transportation'),
+        ('insurance', 'Insurance'),
+        ('debt_payments', 'Debt Payments'),
+        ('entertainment', 'Entertainment'),
+        ('personal_care', 'Personal Care'),
+        ('health_and_fitness', 'Health and Fitness'),
+        ('savings', 'Savings'),
+        ('clothing', 'Clothing'),
+        ('gifts', 'Gifts'),
+        ('travel', 'Travel'),
+        ('miscellaneous', 'Miscellaneous')
+    ]
+
+    category = SelectField('Category', choices=category_choices, validators=[DataRequired()])
+    amount = DecimalField('Amount', validators=[DataRequired(), NumberRange(min=0)])
+    date = DateField('Date', validators=[DataRequired()])
+    notes = StringField('Notes')
 
 
 class Income(db.Model):
@@ -204,7 +225,7 @@ def add_budget():
     form = BudgetForm()
 
     if form.validate_on_submit():
-        print(form.category)
+        #print(form.category)
         category = form.category.data
         amount = form.amount.data
         frequency = form.frequency.data
@@ -239,10 +260,15 @@ def record_expense():
     if form.validate_on_submit():
         category = form.category.data
         amount = form.amount.data
+        date = form.date.data
+        notes = form.notes.data
+
         budget_id = request.form.get('budget_id')
-        new_expense = Expense(category=category, amount=amount)
+        new_expense = Expense(category=category, amount=amount, date=date, notes=notes, budget_id=budget_id)
         db.session.add(new_expense)
         db.session.commit()
+        flash('Expense recorded successfully!', 'success')
+
     return render_template('expense.html', form=form)
     
 

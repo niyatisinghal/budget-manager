@@ -7,16 +7,19 @@
     <style>
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #91e5f6;
+            background-color: #f7f7f7;
             color: #133c55;
             margin: 0;
             padding: 0;
+            text-align: center;
         }
 
         header {
             background-color: #386fa4;
-            padding: 20px;
+            padding: 20px 0;
             text-align: center;
+            color: #ffffff;
+            margin-bottom: 20px;
         }
 
         h1 {
@@ -48,6 +51,7 @@
 
         main {
             padding: 20px;
+            text-align: center;
         }
 
         table {
@@ -57,7 +61,7 @@
         }
 
         th, td {
-            border: 1px solid #386fa4;
+            /*border: 1px solid #386fa4;*/
             padding: 8px;
             text-align: left;
         }
@@ -76,9 +80,14 @@
 
         form {
             margin-top: 20px;
+            display: inline-block;
+            text-align: left;
+            background-color: #59a5d8;
+            padding: 20px;
+            border-radius: 10px;
         }
 
-        /* Include the new CSS styles for the add-budget-table */
+        /* Include the new CSS styles for the add-budget-table 
         .add-budget-table {
             width: 100%;
             border-collapse: collapse;
@@ -113,10 +122,55 @@
 
         .add-budget-table button:hover {
             background-color: #84d2f6;
-        }
-        .initially-hidden {
+        }*/
+
+
+        /*.initially-hidden {
             display: none;
+        }*/
+
+        .field-label {
+            width: 150px; /* Adjust the width based on your design */
+            padding-right: 10px; /* Add right padding for spacing */
         }
+
+        .field-input {
+            width: calc(100% - 160px); /* Adjust the width based on your design */
+        }
+
+        .field-input select {
+            width: 100%; /* Make the dropdown fill the entire width */
+            padding: 8px; /* Adjust the padding based on your design */
+            margin-top: 5px; /* Add top margin for spacing */
+            margin-bottom: 10px; /* Add bottom margin for spacing */
+            font-size: inherit; /* Use the same font size as the parent (label) */
+        }
+
+
+        label {
+            display: inline-block;
+            margin-bottom: 10px;
+            font-weight: bold;
+            width: 150px;
+        }
+
+        input {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+            margin-bottom: 10px;
+        }
+
+        button {
+            padding: 10px;
+            background-color: #386fa4;
+            color: #ffffff;
+            border: none;
+            cursor: pointer;
+        }
+
+
+
         #notification {
             display: none;
             color: red;
@@ -170,6 +224,13 @@
             padding: 20px;
             border-radius: 8px;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .content h2 {
+            font-family: 'Syne', sans-serif;
+            color: #133C55;
+            text-align: center;
+            margin-bottom: 20px;
         }
 
         .content p {
@@ -303,15 +364,20 @@
         <a href="/">Home</a>
         <a href="/budget1">Budget</a>
         <a href="/expenses">Expenses</a>
+        <a href="/income">Income</a> 
+        <a href="/debt">Debt</a>
+        <a href="/transaction_history">Transaction History</a>
     </nav>
 
     <main>
+        <div class="container">
+            <div class="content">
         <h2>Record Expense</h2>
         <form id="record-expense-form" method="post" action="{{ url_for('record_expense') }}" onkeyup="toggleTableVisibility()">
             <table class="add-expense-table">
                 <tr>
-                    <td><label for="category">Category:</label></td>
-                    <td><input type="text" name="category" required></td>
+                    <td class="field-input"><label for="category">Category:</label></td>
+                    <td class="field-input">{{ form.category(class="form-control", required=true) }}</td>
                 </tr>
                 <tr>
                     <td><label for="amount">Amount:</label></td>
@@ -335,6 +401,9 @@
 
             
         </form>
+            </div></div><br>
+
+            <div class="content">
 
 
         <table id="expense-table" class="initially-hidden">
@@ -370,6 +439,7 @@
         </table>
 
         <div id="notification"></div>
+            </div>
 
         
     </main>

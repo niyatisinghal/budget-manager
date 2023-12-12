@@ -163,12 +163,12 @@ class IncomeForm(FlaskForm):
         ('pensions', 'Pensions')
     ]
 
-    def validate_numeric(form, field):
+    """def validate_numeric(form, field):
         if not re.match(r'^\d+(\.\d+)?$', str(field.data)):
-            raise ValidationError('Please enter a valid numeric value.')
+            raise ValidationError('Please enter a valid numeric value.')"""
 
     source = SelectField('Source', choices=source_choices, validators=[DataRequired()])
-    planned_income = DecimalField('Planned Income', validators=[DataRequired(), NumberRange(min=0), validate_numeric], widget=CurrencyInput())
+    planned_income = DecimalField('Planned Income', validators=[DataRequired(), NumberRange(min=0)], widget=CurrencyInput())
     actual_income = DecimalField('Actual Income', widget=CurrencyInput())
     date = DateField('Date', validators=[DataRequired()])
 
@@ -343,8 +343,12 @@ def add_income():
         # Flash a success message
         flash('Income entry added successfully!', 'success')
 
-        return render_template('income.html', allincome=form, income_data=income_data)
-    return render_template('income.html', allincome=form)
+        # Pass the form and income data to the template with different variable names
+        return render_template('income.html', income_form=form, income_data=income_data)
+
+    # Pass the form to the template
+    return render_template('income.html', income_form=form)
+
 
 @app.route('/edit_income/<int:id>', methods=['GET', 'POST'])
 def edit_income(id):

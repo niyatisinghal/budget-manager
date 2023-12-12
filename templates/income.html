@@ -7,16 +7,19 @@
     <style>
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #91e5f6;
+            background-color: #f7f7f7;
             color: #133c55;
             margin: 0;
             padding: 0;
+            text-align: center;
         }
 
         header {
             background-color: #386fa4;
-            padding: 20px;
+            padding: 20px 0;
             text-align: center;
+            color: #ffffff;
+            margin-bottom: 20px;
         }
 
         h1 {
@@ -48,6 +51,7 @@
 
         main {
             padding: 20px;
+            text-align: center;
         }
 
         table {
@@ -57,7 +61,7 @@
         }
 
         th, td {
-            border: 1px solid #386fa4;
+            /*border: 1px solid #386fa4;*/
             padding: 8px;
             text-align: left;
         }
@@ -69,6 +73,43 @@
             font-size: 1.2em;
         }
 
+        .record-income-form {
+            display: inline-block;
+            text-align: left;
+            background-color: #59a5d8;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            width: 70%; /* Adjust the width based on your design */
+            margin: auto; /* Center the form */
+        }
+
+        .record-income-form label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: bold;
+            color: #ffffff; /* Text color for labels */
+        }
+
+        .record-income-form input {
+            width: calc(100% - 16px); /* Adjust the width based on your design */
+            padding: 8px;
+            box-sizing: border-box;
+            margin-bottom: 10px;
+        }
+
+        .record-income-form button {
+            padding: 10px; /* Adjust the padding based on your design */
+            background-color: #386fa4;
+            color: #ffffff;
+            border: none;
+            cursor: pointer;
+        }
+
+        .record-income-form button:hover {
+            background-color: #59a5d8;
+        }
+
         .add-income-table th {
             background-color: #84d2f6;
             color: #133c55;
@@ -76,6 +117,11 @@
 
         form {
             margin-top: 20px;
+            display: inline-block;
+            text-align: left;
+            background-color: #59a5d8;
+            padding: 20px;
+            border-radius: 10px;
         }
 
         /* Include the new CSS styles for the add-income-table */
@@ -115,30 +161,219 @@
             background-color: #84d2f6;
         }
 
-        .initially-hidden {
+        /*.initially-hidden {
             display: none;
-        }
+        }*/
 
         #income-notification {
             display: none;
             color: green;
             margin-top: 10px;
         }
+
+        ul.flashes {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        ul.flashes li {
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+
+        ul.flashes li.success {
+            background-color: #4CAF50;
+            color: #ffffff;
+        }
+
+        ul.flashes li.error {
+            background-color: #f44336;
+            color: #ffffff;
+        }
+
+        .field-label {
+            width: 150px; /* Adjust the width based on your design */
+            padding-right: 10px; /* Add right padding for spacing */
+        }
+
+        .field-input {
+            width: calc(100% - 160px); /* Adjust the width based on your design */
+        }
+
+        .field-input select {
+            width: 100%; /* Make the dropdown fill the entire width */
+            padding: 8px; /* Adjust the padding based on your design */
+            margin-top: 5px; /* Add top margin for spacing */
+            margin-bottom: 10px; /* Add bottom margin for spacing */
+            font-size: inherit; /* Use the same font size as the parent (label) */
+        }
+
+        /* Include the new CSS styles for the add-budget-table */
+
+        label {
+            display: inline-block;
+            margin-bottom: 10px;
+            font-weight: bold;
+            width: 150px;
+        }
+
+        input {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+            margin-bottom: 10px;
+        }
+
+        button {
+            padding: 10px;
+            background-color: #386fa4;
+            color: #ffffff;
+            border: none;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #59a5d8;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .content {
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .content h2 {
+            font-family: 'Syne', sans-serif;
+            color: #133C55;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .content p {
+            color: #333333;
+            line-height: 1.6;
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px 0;
+            background-color: #386FA4;
+            color: #ffffff;
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+        }
+
     </style>
     <script>
         // Modify the existing JavaScript functions or add new ones as needed
+        document.addEventListener('DOMContentLoaded', function () {
+        // Attach the event listener to the form
+            const recordIncomeForm = document.getElementById('record-income-form');
+            recordIncomeForm.addEventListener('keyup', toggleIncomeTableVisibility);
+        });
+
+
         function toggleIncomeTableVisibility() {
-            const incomeTable = document.getElementById('income-table');
+            console.log('Function is being called!'); // Add this line
 
-            // You can customize the logic to toggle visibility based on user input
-            // For example, if any field in the form has a value, show the table
-            const form = document.getElementById('record-income-form');
-            const anyFieldHasValue = Array.from(form.elements).some(element => element.value.trim() !== '');
+            const table = document.getElementById('income-table');
+            const recordIncomeForm = document.getElementById('record-income-form');
+            const addedItemRow = document.getElementById('added-item-row');
 
-            if (incomeTable) {
-                incomeTable.style.display = anyFieldHasValue ? 'table' : 'none';
+
+            if (table && recordIncomeForm && addedItemRow) {
+                const source = recordIncomeForm.elements['source'].value.trim();
+                const plannedIncome = recordIncomeForm.elements['planned_income'].value.trim();
+                const actualIncome = recordIncomeForm.elements['actual_income'].value.trim();
+                const date = recordIncomeForm.elements['date'].value.trim();
+
+                if (source !== '' || plannedIncome !== '' || actualIncome !== '' || date !== '') {
+                    table.style.display = 'table';
+                    addedItemRow.classList.remove('initially-hidden');
+
+                    // Update the added item row with the form values
+                    document.getElementById('added-source').textContent = source;
+                    document.getElementById('added-planned-income').textContent = plannedIncome;
+                    document.getElementById('added-actual-income').textContent = actualIncome;
+                    document.getElementById('added-date').textContent = date;
+                } else {
+                    table.style.display = 'none';
+                    addedItemRow.classList.add('initially-hidden');                
+                }
             }
         }
+
+        function formatDate(dateString) {
+            const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
+            const formattedDate = new Date(dateString).toLocaleDateString(undefined, options);
+            return formattedDate;
+        }
+
+        function handleFormSubmit(event) {
+            // Prevent the default form submission
+            event.preventDefault();
+
+            // Reset the form
+            document.getElementById('record-budget-form').reset();
+        }
+
+        function addIncomeRow() {
+            const table = document.getElementById('income-table');
+            const recordIncomeForm = document.getElementById('record-income-form');
+            const incomeNotification = document.getElementById('income-notification');
+
+            if (table && recordIncomeForm) {
+                const source = recordIncomeForm.elements['source'].value.trim();
+                const plannedIncome = recordIncomeForm.elements['planned_income'].value.trim();
+                const actualIncome = recordIncomeForm.elements['actual_income'].value.trim();
+                const date = recordIncomeForm.elements['date'].value.trim();
+
+                if (source !== '' && plannedIncome !== '' && actualIncome !== '' && date !== '') {
+            // Create a new row and cells for the table
+                    const newRow = table.insertRow(table.rows.length); // Insert at the end of the table
+                    const cell1 = newRow.insertCell(0);
+                    const cell2 = newRow.insertCell(1);
+                    const cell3 = newRow.insertCell(2);
+                    const cell4 = newRow.insertCell(3);
+
+            // Populate the cells with form values
+                    cell1.textContent = source;
+                    cell2.textContent = '$' + plannedIncome;
+                    cell3.textContent = '$' + actualIncome;
+                    cell4.textContent = date;
+
+            // Clear the form for the next input
+                    recordIncomeForm.reset();
+            // Show success message
+                    incomeNotification.textContent = 'Income item added successfully.';
+                    incomeNotification.style.color = 'green';
+                } else {
+            // Show error message
+                    incomeNotification.textContent = 'Please fill in all fields before adding the income item.';
+                    incomeNotification.style.color = 'red';
+                }
+        // Display the notification
+                incomeNotification.style.display = 'block';
+
+        // Hide the notification after a few seconds (you can adjust the timeout)
+                setTimeout(() => {
+                    incomeNotification.style.display = 'none';
+                }, 3000);
+            }
+        }
+
+
 
         // Add any additional JavaScript functions or modifications as needed
     </script>
@@ -150,28 +385,22 @@
 
     <nav>
         <a href="/">Home</a>
-        <a href="/budget">Budget</a>
+        <a href="/budget1">Budget</a>
+        <a href="/expenses">Expenses</a>
         <a href="/income">Income</a>
+        <a href="/debt">Debt</a>
+        <a href="/transaction_history">Transaction History</a>
     </nav>
 
     <main>
+        <div class="container">
+            <div class="content">
         <h2>Record Income</h2>
         <form id="record-income-form" method="post" action="{{ url_for('add_income') }}" onkeyup="toggleIncomeTableVisibility()">
             <table class="add-income-table">
                 <tr>
-                    <td><label for="source">Source:</label></td>
-                    <td>
-                        <select name="source" required>
-                            <option value="salary">Salary</option>
-                            <option value="freelance">Freelance</option>
-                            <option value="side_hustle">Side Hustle</option>
-                            <option value="bonus">Bonus</option>
-                            <option value="business_income">Business Income</option>
-                            <option value="interest_income">Interest Income</option>
-                            <option value="online_platforms">Online Platforms</option>
-                            <option value="pensions">Pensions</option>
-                        </select>
-                    </td>
+                    <td class="field-input"><label for="source">Source:</label></td>
+                    <td class="field-input">{{ income_form.source(class="form-control", required=true) }}</td>
                 </tr>
                 
                 <tr>
@@ -188,11 +417,15 @@
                 </tr>
                 <tr>
                     <td colspan="2" style="text-align: center;">
-                        <button type="submit">Record Income</button>
+                        <button type="submit" onclick="addIncomeRow()">Record Income</button>
                     </td>
                 </tr>
             </table>
         </form>
+        </div>
+    </div>
+    <br>
+    <div class="content">
 
         <!-- Table to display recorded income entries -->
         <table id="income-table" style="display: none;">
@@ -220,10 +453,17 @@
                     </td>
                 </tr>
             {% endfor %}
+            <tr id="added-item-row" class="initially-hidden">
+                <td id="added-source"></td>
+                <td id="added-planned-income"></td>
+                <td id="added-actual-income"></td>
+                <td id="added-date"></td>
+            </tr>
         </table>
 
         <!-- Optional: Notification or message div -->
         <div id="income-notification"></div>
+    </div>
     </main>
 </body>
 </html>

@@ -7,16 +7,19 @@
     <style>
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #91e5f6;
+            background-color: #f7f7f7;
             color: #133c55;
             margin: 0;
             padding: 0;
+            text-align: center;
         }
 
         header {
             background-color: #386fa4;
-            padding: 20px;
+            padding: 20px 0;
             text-align: center;
+            color: #ffffff;
+            margin-bottom: 20px;
         }
 
         h1 {
@@ -48,28 +51,90 @@
 
         main {
             padding: 20px;
+            text-align: center;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-top: 20px; /* Add margin to separate the form and the table */
+        }
+
+        th, td {
+            
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #59a5d8;
+            color: #ffffff;
+            /*font-family: 'Syne', sans-serif;*/
         }
 
         form {
             margin-top: 20px;
+            display: inline-block;
+            text-align: left;
+            background-color: #59a5d8;
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        .add-debt-form {
+            display: inline-block;
+            text-align: left;
+            background-color: #59a5d8;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            width: 70%; /* Adjust the width based on your design */
+            margin: auto; /* Center the form */
+        }
+
+        .add-debt-form label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: bold;
+            color: #ffffff; /* Text color for labels */
+        }
+
+        .add-debt-form input {
+            width: calc(100% - 16px); /* Adjust the width based on your design */
+            padding: 8px;
+            box-sizing: border-box;
+            margin-bottom: 10px;
+        }
+
+        .add-debt-form button {
+            padding: 10px; /* Adjust the padding based on your design */
+            background-color: #386fa4;
+            color: #ffffff;
+            border: none;
+            cursor: pointer;
+        }
+
+        .add-debt-form button:hover {
+            background-color: #59a5d8;
         }
 
         /* Include the new CSS styles for the add-expense-table */
-        .add-expense-table {
+        .add-debt-table {
             width: 100%;
             border-collapse: collapse;
             margin-bottom: 20px;
         }
 
-        .add-expense-table label {
+        .add-debt-table label {
             display: block;
             margin-bottom: 5px;
             font-weight: bold;
             font-size: 1.2em;
         }
 
-        .add-expense-table input,
-        .add-expense-table select {
+        .add-debt-table input,
+        .add-debt-table select, 
+        .add-debt-table textarea {
             width: 100%;
             padding: 8px;
             box-sizing: border-box;
@@ -77,7 +142,7 @@
             font-size: 1em;
         }
 
-        .add-expense-table button {
+        .add-debt-table button {
             margin-top: 20px;
             padding: 12px;
             background-color: #59a5d8;
@@ -87,8 +152,112 @@
             font-size: 1.2em;
         }
 
-        .add-expense-table button:hover {
+        .add-debt-table button:hover {
             background-color: #84d2f6;
+        }
+
+
+        ul.flashes {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        ul.flashes li {
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+
+        ul.flashes li.success {
+            background-color: #4CAF50;
+            color: #ffffff;
+        }
+
+        ul.flashes li.error {
+            background-color: #f44336;
+            color: #ffffff;
+        }
+
+        .field-label {
+            width: 150px; /* Adjust the width based on your design */
+            padding-right: 10px; /* Add right padding for spacing */
+        }
+
+        .field-input {
+            width: calc(100% - 160px); /* Adjust the width based on your design */
+        }
+
+        .field-input select {
+            width: 100%; /* Make the dropdown fill the entire width */
+            padding: 8px; /* Adjust the padding based on your design */
+            margin-top: 5px; /* Add top margin for spacing */
+            margin-bottom: 10px; /* Add bottom margin for spacing */
+            font-size: inherit; /* Use the same font size as the parent (label) */
+        }
+
+        /* Include the new CSS styles for the add-budget-table */
+
+        label {
+            display: inline-block;
+            margin-bottom: 10px;
+            font-weight: bold;
+            width: 150px;
+        }
+
+        input {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+            margin-bottom: 10px;
+        }
+
+        button {
+            padding: 10px;
+            background-color: #386fa4;
+            color: #ffffff;
+            border: none;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #59a5d8;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .content {
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .content h2 {
+            font-family: 'Syne', sans-serif;
+            color: #133C55;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .content p {
+            color: #333333;
+            line-height: 1.6;
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px 0;
+            background-color: #386FA4;
+            color: #ffffff;
+            position: absolute;
+            bottom: 0;
+            width: 100%;
         }
 
         .initially-hidden {
@@ -101,6 +270,97 @@
             margin-top: 10px;
         }
     </style>
+
+<script>
+    // Modify the toggleTableVisibility function
+    function toggleTableVisibility() {
+        const table = document.getElementById('debt-table');
+        const recordDebtForm = document.getElementById('record-debt-form');
+        const addedItemRow = document.getElementById('added-item-row');
+
+        if (table && recordDebtForm && addedItemRow) {
+            const debtType = recordDebtForm.elements['debt_type'].value.trim();
+            const principalAmount = recordDebtForm.elements['principal_amount'].value.trim();
+            const interestRate = recordDebtForm.elements['interest_rate'].value.trim();
+            const monthlyPayment = recordDebtForm.elements['monthly_payment'].value.trim();
+            const remainingBalance = recordDebtForm.elements['remaining_balance'].value.trim();
+
+            if (debtType !== '' || principalAmount !== '' || interestRate !== '' || monthlyPayment !== '' || remainingBalance !== '') {
+                table.classList.remove('initially-hidden');
+                addedItemRow.classList.remove('initially-hidden');
+
+                // Update the added item row with the form values
+                document.getElementById('added-debt-type').textContent = debtType;
+                document.getElementById('added-principal-amount').textContent = principalAmount;
+                document.getElementById('added-interest-rate').textContent = interestRate;
+                document.getElementById('added-monthly-payment').textContent = monthlyPayment;
+                document.getElementById('added-remaining-balance').textContent = remainingBalance;
+            } else {
+                table.classList.add('initially-hidden');
+                addedItemRow.classList.add('initially-hidden');
+            }
+        }
+    }
+
+    function handleFormSubmit(event) {
+        // Prevent the default form submission
+        event.preventDefault();
+
+        // Reset the form
+        document.getElementById('record-debt-form').reset();
+    }
+
+    function addDebtRow() {
+        const table = document.getElementById('debt-table');
+        const recordDebtForm = document.getElementById('record-debt-form');
+        const notification = document.getElementById('notification');
+
+        if (table && recordDebtForm) {
+            const debtType = recordDebtForm.elements['debt_type'].value.trim();
+            const principalAmount = recordDebtForm.elements['principal_amount'].value.trim();
+            const interestRate = recordDebtForm.elements['interest_rate'].value.trim();
+            const monthlyPayment = recordDebtForm.elements['monthly_payment'].value.trim();
+            const remainingBalance = recordDebtForm.elements['remaining_balance'].value.trim();
+
+            if (debtType !== '' && principalAmount !== '' && interestRate !== '' && monthlyPayment !== '' && remainingBalance !== '') {
+                // Create a new row and cells for the table
+                const newRow = table.insertRow(table.rows.length); // Insert at the end of the table
+                const cell1 = newRow.insertCell(0);
+                const cell2 = newRow.insertCell(1);
+                const cell3 = newRow.insertCell(2);
+                const cell4 = newRow.insertCell(3);
+                const cell5 = newRow.insertCell(4);
+
+                // Populate the cells with form values
+                cell1.textContent = debtType;
+                cell2.textContent = '$' + principalAmount;
+                cell3.textContent = interestRate;
+                cell4.textContent = '$' + monthlyPayment;
+                cell5.textContent = '$' + remainingBalance;
+
+                // Clear the form for the next input
+                recordDebtForm.reset();
+                // Show success message
+                notification.textContent = 'Debt item added successfully.';
+                notification.style.color = 'green';
+            } else {
+                // Show error message
+                notification.textContent = 'Please fill in all fields before adding the debt item.';
+                notification.style.color = 'red';
+            }
+            // Display the notification
+            notification.style.display = 'block';
+
+            // Hide the notification after a few seconds (you can adjust the timeout)
+            setTimeout(() => {
+                notification.style.display = 'none';
+            }, 3000);
+        }
+    }
+
+</script>
+
+
 </head>
 <body>
     <header>
@@ -111,42 +371,70 @@
         <a href="/">Home</a>
         <a href="/budget1">Budget</a>
         <a href="/expenses">Expenses</a>
+        <a href="/income">Income</a> 
+        <a href="/debt">Debt</a>
+        <a href="/transaction_history">Transaction History</a>
     </nav>
 
     <main>
-        <form method="POST" action="/debt">
-            {{ alldebt.csrf_token }}
-            {{ alldebt.hidden_tag() }}
-            <table class="add-expense-table">
+
+        <div class="container">
+            <div class="content">
+                <h2>Add Debt Item</h2>
+                <form id="record-debt-form" method="POST" action="/debt" onkeyup="toggleTableVisibility()" onsubmit="handleFormSubmit()">
+                    {{ alldebt.csrf_token }}
+                    {{ alldebt.hidden_tag() }}
+                    <table class="add-debt-table">
+                        <tr>
+                            <td class="field-input"><label for="debt_type">Debt Type:</label></td>
+                            <td class="field-input">{{ alldebt.debt_type(class="form-control", required=true) }}</td>
+                        </tr>
+                        <tr>
+                            <td><label for="principal_amount">Principal Amount:</label></td>
+                            <td>{{ alldebt.principal_amount(class="form-control", required=true) }}</td>
+                        </tr>
+                        <tr>
+                            <td><label for="interest_rate">Interest Rate:</label></td>
+                            <td>{{ alldebt.interest_rate(class="form-control", required=true) }}</td>
+                        </tr>
+                        <tr>
+                            <td><label for="monthly_payment">Monthly Payment:</label></td>
+                            <td>{{ alldebt.monthly_payment(class="form-control", required=true) }}</td>
+                        </tr>
+                        <tr>
+                            <td><label for="remaining_balance">Remaining Balance:</label></td>
+                            <td>{{ alldebt.remaining_balance(class="form-control", required=true) }}</td>
+                        </tr>
+                        <tr>
+                            <td colspan="2" style="text-align: center;">
+                                <button type="submit">Add Debt</button>
+                            </td>
+                        </tr>
+                    </table>
+                </form>
+            </div>
+        </div>
+        <br>
+        <div class="content">
+            <table id="debt-table" class="initially-hidden">
                 <tr>
-                    <td><label for="debt_type">Debt Type:</label></td>
-                    <td>{{ alldebt.debt_type }}</td>
+                    <th>Debt Type</th>
+                    <th>Principal Amount</th>
+                    <th>Interest Rate</th>
+                    <th>Monthly Payment</th>
+                    <th>Remaining Balance</th>
                 </tr>
-                <tr>
-                    <td><label for="principal_amount">Principal Amount:</label></td>
-                    <td>{{ alldebt.principal_amount }}</td>
-                </tr>
-                <tr>
-                    <td><label for="interest_rate">Interest Rate:</label></td>
-                    <td>{{ alldebt.interest_rate }}</td>
-                </tr>
-                <tr>
-                    <td><label for="monthly_payment">Monthly Payment:</label></td>
-                    <td>{{ alldebt.monthly_payment }}</td>
-                </tr>
-                <tr>
-                    <td><label for="remaining_balance">Remaining Balance:</label></td>
-                    <td>{{ alldebt.remaining_balance }}</td>
-                </tr>
-                <tr>
-                    <td colspan="2" style="text-align: center;">
-                        <button type="submit">Add Debt</button>
-                    </td>
+                <!-- New row for the added debt item -->
+                <tr id="added-item-row" class="initially-hidden">
+                    <td id="added-debt-type"></td>
+                    <td id="added-principal-amount"></td>
+                    <td id="added-interest-rate"></td>
+                    <td id="added-monthly-payment"></td>
+                    <td id="added-remaining-balance"></td>
                 </tr>
             </table>
-        </form>
-
         <div id="notification"></div>
+        </div>
     </main>
 </body>
 </html>

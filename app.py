@@ -2,7 +2,7 @@ from flask import Flask, render_template, request, redirect, url_for, flash
 from flask_sqlalchemy import SQLAlchemy
 from flask_wtf import FlaskForm
 from flask_migrate import Migrate
-from wtforms import StringField, FloatField, DateField, SelectField, ValidationError, DecimalField
+from wtforms import StringField, FloatField, DateField, SelectField, ValidationError, DecimalField, IntegerField
 from datetime import datetime
 from wtforms.validators import DataRequired , NumberRange, EqualTo, ValidationError, Regexp, AnyOf
 from wtforms.widgets import NumberInput, Input
@@ -52,24 +52,7 @@ class PercentageInput(Input):
         return Markup(''.join(html))
 
 
-class RemainingBalanceValidator:
-    def __init__(self, principal_fieldname, interest_rate_fieldname, months_fieldname):
-        self.principal_fieldname = principal_fieldname
-        self.interest_rate_fieldname = interest_rate_fieldname
-        self.months_fieldname = months_fieldname
 
-    def __call__(self, form, field):
-        principal = form[self.principal_fieldname].data
-        interest_rate = form[self.interest_rate_fieldname].data / 100 / 12  # Monthly interest rate
-        months = form[self.months_fieldname].data  # Total number of payments
-
-        calculated_remaining_balance = principal * (1 - (1 + interest_rate) ** -months) / interest_rate
-
-        if not field.data:
-            raise ValidationError('This field is required.')
-
-        if field.data != round(calculated_remaining_balance, 2):
-            raise ValidationError('The calculated remaining balance does not match.')
 
         
 
@@ -179,6 +162,8 @@ class Debt(db.Model):
     interest_rate = db.Column(db.Float, nullable=False)
     monthly_payment = db.Column(db.Float, nullable=False)
     remaining_balance = db.Column(db.Float, nullable=False)
+    months = db.Column(db.Integer, nullable=False)  # Add this line for the 'months' field
+
 
 
 class DebtForm(FlaskForm):
@@ -193,7 +178,9 @@ class DebtForm(FlaskForm):
     principal_amount = DecimalField('Principal Amount', validators=[DataRequired(), NumberRange(min=0, message="Please enter a valid numeric value.")])
     interest_rate = DecimalField('Interest Rate', widget=NumberInput(), validators=[DataRequired(), NumberRange(min=0, message="Please enter a valid numeric value.")])
     monthly_payment = DecimalField('Monthly Payment', validators=[DataRequired(), NumberRange(min=0, message="Please enter a valid numeric value.")], widget=CurrencyInput())
-    remaining_balance = DecimalField('Remaining Balance', validators=[DataRequired(), RemainingBalanceValidator('principal_amount', 'interest_rate', 'months')])
+    months = IntegerField('Months', validators=[DataRequired(), NumberRange(min=0, message="Please enter a valid numeric value.")])
+
+    remaining_balance = DecimalField('Remaining Balance', validators=[DataRequired()])
 
 
     
@@ -412,8 +399,12 @@ def calculate_remaining_balance(principal, interest_rate, months):
 @app.route('/transaction_history', methods=['GET', 'POST'])
 def record_transaction_history():
     form = TransactionHistoryForm()
-    
-    if form.validate_on_submit():
+
+    # Fetch data only if it's not the first load (i.e., after form submission)
+    transaction_history_data = TransactionHistory.query.all() if request.method == 'POST' else []
+
+    if request.method == 'POST' and form.validate_on_submit():
+        # Your form processing logic
         date = form.date.data
         description = form.description.data
         category = form.category.data
@@ -427,16 +418,13 @@ def record_transaction_history():
         db.session.add(new_transaction)
         db.session.commit()
 
-        # Retrieve the updated transaction history data from the database
+        # Fetch the updated transaction history data from the database
         transaction_history_data = TransactionHistory.query.all()
 
         # Flash a success message (if you want)
         flash('Transaction history entry added successfully!', 'success')
 
-        return render_template('transaction_history.html', all_transactions=form, transaction_history_data=transaction_history_data)
-    
-    return render_template('transaction_history.html', all_transactions=form)
-
+    return render_template('transaction_history.html', all_transactions=form, transaction_history_data=transaction_history_data)
 
 @app.route('/edit_transaction_history/<int:id>', methods=['GET', 'POST'])
 def edit_transaction_history(id):

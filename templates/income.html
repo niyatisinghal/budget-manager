@@ -22,11 +22,11 @@
             margin-bottom: 20px;
         }
 
-        h1 {
+        h1, h2 {
             font-family: 'Syne', sans-serif;
             font-size: 3em;
             color: #ffffff;  /* White text on the header */
-            margin: 0;
+            /*margin: 0;*/
         }
 
         nav {
@@ -40,8 +40,8 @@
             text-decoration: none;
             padding: 10px;
             margin: 0 10px;
-            font-weight: bold;
-            font-size: 1.2em;
+            /*font-weight: bold;
+            font-size: 1.2em;*/
         }
 
         nav a:hover {
@@ -69,8 +69,8 @@
         th {
             background-color: #59a5d8;
             color: #ffffff;
-            font-family: 'Syne', sans-serif;
-            font-size: 1.2em;
+            /*font-family: 'Syne', sans-serif;
+            font-size: 1.2em;*/
         }
 
         .record-income-form {
@@ -148,8 +148,8 @@
         }
 
         .add-income-table button {
-            margin-top: 20px;
-            padding: 12px;
+            margin-top: 10px;
+            padding: 8px;
             background-color: #59a5d8;
             color: #ffffff;
             border: none;
@@ -165,11 +165,11 @@
             display: none;
         }*/
 
-        #income-notification {
+        /*#income-notification {
             display: none;
             color: green;
             margin-top: 10px;
-        }
+        }*/
 
         ul.flashes {
             list-style: none;
@@ -277,11 +277,11 @@
     </style>
     <script>
         // Modify the existing JavaScript functions or add new ones as needed
-        document.addEventListener('DOMContentLoaded', function () {
+        /*document.addEventListener('DOMContentLoaded', function () {
         // Attach the event listener to the form
             const recordIncomeForm = document.getElementById('record-income-form');
             recordIncomeForm.addEventListener('keyup', toggleIncomeTableVisibility);
-        });
+        });*/
 
 
         function toggleIncomeTableVisibility() {
@@ -299,7 +299,7 @@
                 const date = recordIncomeForm.elements['date'].value.trim();
 
                 if (source !== '' || plannedIncome !== '' || actualIncome !== '' || date !== '') {
-                    table.style.display = 'table';
+                    table.classList.remove('initially-hidden');
                     addedItemRow.classList.remove('initially-hidden');
 
                     // Update the added item row with the form values
@@ -308,7 +308,7 @@
                     document.getElementById('added-actual-income').textContent = actualIncome;
                     document.getElementById('added-date').textContent = date;
                 } else {
-                    table.style.display = 'none';
+                    table.classList.add('initially-hidden');
                     addedItemRow.classList.add('initially-hidden');                
                 }
             }
@@ -325,7 +325,7 @@
             event.preventDefault();
 
             // Reset the form
-            document.getElementById('record-budget-form').reset();
+            document.getElementById('record-income-form').reset();
         }
 
         function addIncomeRow() {
@@ -417,7 +417,7 @@
                 </tr>
                 <tr>
                     <td colspan="2" style="text-align: center;">
-                        <button type="submit" onclick="addIncomeRow()">Record Income</button>
+                        <button type="button" onclick="addIncomeRow()">Record Income</button>
                     </td>
                 </tr>
             </table>
@@ -428,16 +428,15 @@
     <div class="content">
 
         <!-- Table to display recorded income entries -->
-        <table id="income-table" style="display: none;">
+        <table id="income-table" class="initially-hidden">
             <tr>
                 <th>Source</th>
                 <th>Planned Income</th>
                 <th>Actual Income</th>
                 <th>Date</th>
-                <th>Actions</th>
             </tr>
           
-            {% for income_entry in income_data %}
+            <!--{% for income_entry in income_data %}
                 <tr>
                     <td>{{ income_entry.source }}</td>
                     <td>${{ income_entry.planned_income }}</td>
@@ -452,7 +451,7 @@
                         </form>
                     </td>
                 </tr>
-            {% endfor %}
+            {% endfor %}-->
             <tr id="added-item-row" class="initially-hidden">
                 <td id="added-source"></td>
                 <td id="added-planned-income"></td>

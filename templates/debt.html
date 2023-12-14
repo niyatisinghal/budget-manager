@@ -22,11 +22,11 @@
             margin-bottom: 20px;
         }
 
-        h1 {
+        h1,h2 {
             font-family: 'Syne', sans-serif;
             font-size: 3em;
             color: #ffffff;  /* White text on the header */
-            margin: 0;
+            /*margin: 0;*/
         }
 
         nav {
@@ -40,8 +40,8 @@
             text-decoration: none;
             padding: 10px;
             margin: 0 10px;
-            font-weight: bold;
-            font-size: 1.2em;
+            /*font-weight: bold;
+            font-size: 1.2em;*/
         }
 
         nav a:hover {
@@ -133,7 +133,7 @@
         }
 
         .add-debt-table input,
-        .add-debt-table select, 
+        /*.add-debt-table select, */
         .add-debt-table textarea {
             width: 100%;
             padding: 8px;
@@ -143,8 +143,8 @@
         }
 
         .add-debt-table button {
-            margin-top: 20px;
-            padding: 12px;
+            margin-top: 10px;
+            padding: 8px;
             background-color: #59a5d8;
             color: #ffffff;
             border: none;
@@ -260,7 +260,7 @@
             width: 100%;
         }
 
-        .initially-hidden {
+        /*.initially-hidden {
             display: none;
         }
 
@@ -268,7 +268,7 @@
             display: none;
             color: red;
             margin-top: 10px;
-        }
+        }*/
     </style>
 
 <script>
@@ -334,7 +334,7 @@
                 // Populate the cells with form values
                 cell1.textContent = debtType;
                 cell2.textContent = '$' + principalAmount;
-                cell3.textContent = interestRate;
+                cell3.textContent = interestRate + '%';
                 cell4.textContent = '$' + monthlyPayment;
                 cell5.textContent = '$' + remainingBalance;
 
@@ -381,9 +381,9 @@
         <div class="container">
             <div class="content">
                 <h2>Add Debt Item</h2>
-                <form id="record-debt-form" method="POST" action="/debt" onkeyup="toggleTableVisibility()" onsubmit="handleFormSubmit()">
-                    {{ alldebt.csrf_token }}
-                    {{ alldebt.hidden_tag() }}
+                <form id="record-debt-form" method="post" action="/debt" action="{{ url_for('add_debt') }}" onkeyup="toggleTableVisibility()">
+                    <!--{{ alldebt.csrf_token }}
+                    {{ alldebt.hidden_tag() }}-->
                     <table class="add-debt-table">
                         <tr>
                             <td class="field-input"><label for="debt_type">Debt Type:</label></td>
@@ -391,23 +391,23 @@
                         </tr>
                         <tr>
                             <td><label for="principal_amount">Principal Amount:</label></td>
-                            <td>{{ alldebt.principal_amount(class="form-control", required=true) }}</td>
+                            <td><input type="number" name="principal_amount" required></td>
                         </tr>
                         <tr>
                             <td><label for="interest_rate">Interest Rate:</label></td>
-                            <td>{{ alldebt.interest_rate(class="form-control", required=true) }}</td>
+                            <td><input type="number" name="interest_rate" required></td>
                         </tr>
                         <tr>
                             <td><label for="monthly_payment">Monthly Payment:</label></td>
-                            <td>{{ alldebt.monthly_payment(class="form-control", required=true) }}</td>
+                            <td><input type="number" name="monthly_payment" required></td>
                         </tr>
                         <tr>
                             <td><label for="remaining_balance">Remaining Balance:</label></td>
-                            <td>{{ alldebt.remaining_balance(class="form-control", required=true) }}</td>
+                            <td><input type="number" name="remaining_balance" required></td>
                         </tr>
                         <tr>
                             <td colspan="2" style="text-align: center;">
-                                <button type="submit">Add Debt</button>
+                                <button type="button" onclick="addDebtRow()">Add Debt</button>
                             </td>
                         </tr>
                     </table>

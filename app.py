@@ -132,6 +132,8 @@ class Income(db.Model):
     planned_income = db.Column(db.Float, nullable=False)
     actual_income = db.Column(db.Float)
     date = db.Column(db.Date, nullable=False)
+    budget_id = db.Column(db.Integer, db.ForeignKey('budget.id'), nullable=False)
+    budget = db.relationship('Budget', backref=db.backref('income', lazy=True))
 
 
 class IncomeForm(FlaskForm):
@@ -162,7 +164,9 @@ class Debt(db.Model):
     interest_rate = db.Column(db.Float, nullable=False)
     monthly_payment = db.Column(db.Float, nullable=False)
     remaining_balance = db.Column(db.Float, nullable=False)
-    months = db.Column(db.Integer, nullable=False)  # Add this line for the 'months' field
+    months = db.Column(db.Integer, nullable=False)  
+    budget_id = db.Column(db.Integer, db.ForeignKey('budget.id'), nullable=False)
+    budget = db.relationship('Budget', backref=db.backref('debt', lazy=True))
 
 
 
@@ -192,6 +196,8 @@ class TransactionHistory(db.Model):
     category = db.Column(db.String(50), nullable=False)
     amount = db.Column(db.Float, nullable=False)
     running_balance = db.Column(db.Float, nullable=False)
+    budget_id = db.Column(db.Integer, db.ForeignKey('budget.id'), nullable=False)
+    budget = db.relationship('Budget', backref=db.backref('transaction_history', lazy=True))
 
 
 class TransactionHistoryForm(FlaskForm):

@@ -26,7 +26,6 @@
             font-family: 'Syne', sans-serif;
             color: #ffffff;
             font-size: 3em;
-            /*margin: 0;*/
         }
 
         h1 {
@@ -46,8 +45,6 @@
             text-decoration: none;
             padding: 10px;
             margin: 0 10px;
-            /*font-weight: bold;
-            font-size: 1.2em;*/
         }
 
         nav a:hover {
@@ -67,7 +64,6 @@
         }
 
         th, td {
-            /*border: 1px solid #386fa4;*/
             padding: 8px;
             text-align: left;
         }
@@ -75,8 +71,6 @@
         th {
             background-color: #59a5d8;
             color: #ffffff;
-            /*font-family: 'Syne', sans-serif;
-            font-size: 1.2em;*/
         }
 
         .transaction-history-table th {
@@ -86,7 +80,6 @@
 
         form {
             margin-top: 20px;
-            /*check these if they have some change*/
             display: inline-block;
             text-align: left;
             background-color: #59a5d8;
@@ -120,7 +113,6 @@
             background-color: #84d2f6;
         }
 
-        /* Additional styles for better readability */
         a {
             color: #59a5d8;
             text-decoration: none;
@@ -148,29 +140,27 @@
             padding: 20px;
             border-radius: 10px;
             margin-bottom: 20px;
-            width: 70%; /* Adjust the width based on your design */
-            margin: auto; /* Center the form */
+            width: 70%; 
+            margin: auto; 
         }
 
         .add-transaction-form label {
             display: block;
             margin-bottom: 10px;
             font-weight: bold;
-            color: #ffffff; /* Text color for labels */
-            /*text-align: left;  Align labels to the left */
+            color: #ffffff; 
         }
 
         .add-transaction-form input {
-            width: calc(100% - 16px); /* Adjust the width based on your design */
+            width: calc(100% - 16px); 
             padding: 8px;
             box-sizing: border-box;
             margin-bottom: 10px;
-            /*text-align: left;  Align labels to the left */
 
         }
 
         .add-transaction-form button {
-            padding: 10px; /* Adjust the padding based on your design */
+            padding: 10px; 
             background-color: #386fa4;
             color: #ffffff;
             border: none;
@@ -181,7 +171,6 @@
             background-color: #59a5d8;
         }
 
-        /* Include the new CSS styles for the add-budget-table */
         .add-transaction-table {
             width: 100%;
             border-collapse: collapse;
@@ -218,7 +207,6 @@
             background-color: #84d2f6;
         }
 
-        /* Add this to the existing styles */
         ul.flashes {
             list-style: none;
             padding: 0;
@@ -243,23 +231,22 @@
         }
 
         .field-label {
-            width: 150px; /* Adjust the width based on your design */
-            padding-right: 10px; /* Add right padding for spacing */
+            width: 150px; 
+            padding-right: 10px; 
         }
 
         .field-input {
-            width: calc(100% - 160px); /* Adjust the width based on your design */
+            width: calc(100% - 160px); 
         }
 
         .field-input select {
-            width: 100%; /* Make the dropdown fill the entire width */
-            padding: 8px; /* Adjust the padding based on your design */
-            margin-top: 5px; /* Add top margin for spacing */
-            margin-bottom: 10px; /* Add bottom margin for spacing */
-            font-size: inherit; /* Use the same font size as the parent (label) */
+            width: 100%; 
+            padding: 8px; 
+            margin-top: 5px; 
+            margin-bottom: 10px; 
+            font-size: inherit; 
         }
 
-        /* Include the new CSS styles for the add-budget-table */
 
         label {
             display: inline-block;
@@ -322,13 +309,11 @@
             width: 100%;
         }
 
-        /* Add your other styles here */
 
     </style>
 
 <script>
     function toggleTableVisibility() {
-        // Modify the IDs based on your transaction page structure
         const table = document.getElementById('transaction-history-table');
         const recordTransactionForm = document.getElementById('add-transaction-form');
         const addedItemRow = document.getElementById('added-item-row');
@@ -352,7 +337,6 @@
                 document.getElementById('added-running-balance').textContent = running_balance;
 
 
-                // Optionally, update the added item row with the form values if needed
 
             } else {
                 table.classList.add('initially-hidden');
@@ -370,7 +354,6 @@
 
     function handleTransactionFormSubmit(event) {
         event.preventDefault();
-        // Optionally reset the form if needed
         document.getElementById('add-transaction-form').reset();
     }
 
@@ -389,33 +372,26 @@
 
             if (date !== '' && description !== '' && category !== '' && amount !== '' && running_balance !== '') {
                 const newRow = table.insertRow(table.rows.length);
-                //const newRow = table.insertRow(table.rows.length); // Insert at the end of the table
                     const cell1 = newRow.insertCell(0);
                     const cell2 = newRow.insertCell(1);
                     const cell3 = newRow.insertCell(2);
                     const cell4 = newRow.insertCell(3);
                     const cell5 = newRow.insertCell(4);
 
-                    // Populate the cells with form values
                     cell1.textContent = date;
                     cell2.textContent = description;
                     cell3.textContent = category;
                     cell4.textContent = '$' + amount;
                     cell5.textContent = '$' + running_balance;
-                // Optionally reset the form after adding the row
                 recordTransactionForm.reset();
-                // Show success message
                 notification.textContent = 'Budget item added successfully.';
                 notification.style.color = 'green';
                 } else {
-                    // Show error message
                     notification.textContent = 'Please fill in all fields before adding the budget item.';
                     notification.style.color = 'red';
                 }
-                // Display the notification
                 notification.style.display = 'block';
 
-                // Hide the notification after a few seconds (you can adjust the timeout)
                 setTimeout(() => {
                     notification.style.display = 'none';
                 }, 3000);
@@ -446,8 +422,6 @@
         <h2>Add Transaction History</h2>
 
         <form id="add-transaction-form" method="POST" action="/transaction_history" onkeyup="toggleTableVisibility()">
-            <!--{{ all_transactions.csrf_token }}
-            {{ all_transactions.hidden_tag() }}-->
             <table class="add-transaction-table">
                 <tr>
                     <td><label for="date">Date:</label></td>

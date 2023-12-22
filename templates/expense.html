@@ -67,11 +67,6 @@
             color: #ffffff;
         }
     
-        /*.add-expense-table th {
-            background-color: #84d2f6;
-            color: #133c55;
-        }*/
-    
         form {
             margin-top: 20px;
             display: inline-block;
@@ -445,25 +440,10 @@
             <tr>
                 <th>Category</th>
                 <th>Amount</th>
-                <th>Date</th> <!-- New column for date -->
-                <th>Notes</th> <!-- New column for time -->
+                <th>Date</th> 
+                <th>Notes</th>
                 
             </tr>
-          
-            <!--{% for item in expense_data %}
-                <tr>
-                    <td>{{ item.category }}</td>
-                    <td>${{ item.amount }}</td>
-                    <td>
-                        <form method="post" action="{{ url_for('edit_expense', id=item.id) }}">
-                            <button type="submit">Edit</button>
-                        </form>
-                        <form method="post" action="{{ url_for('delete_expense', id=item.id) }}">
-                            <button type="submit">Delete</button>
-                        </form>
-                    </td>
-                </tr>
-            {% endfor %}-->
             <!-- New row for the added expense item -->
             <tr id="added-item-row" class="initially-hidden">
                 <td id="added-category"></td>
